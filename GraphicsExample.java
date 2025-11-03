@@ -2,8 +2,10 @@ import javax.swing.JFrame;
 
 public class GraphicsExample {
 
+    public JFrame frame;
+
     public GraphicsExample(Player player) {
-        JFrame frame = new JFrame("My Graphics Window");
+        frame = new JFrame("My Graphics Window");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
 
