@@ -28,9 +28,9 @@ public class Player {
         }
     }
 
-    public void render(Graphics2D drawingPanel)
+    public void render(Graphics2D drawingPanel, int[] offset)
     {
-        drawingPanel.drawImage(img, (int) x, (int) y, width, height, null);
+        drawingPanel.drawImage(img, (int) x + offset[0], (int) y + offset[1], width, height, null);
     }
 }
 
