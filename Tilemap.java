@@ -38,14 +38,14 @@ public class Tilemap{
         return tiles;
     }
 
-    public Rect[] physics_rects_around(int[] pos)
+    public Rectangle[] physics_rects_around(int[] pos)
     {
-        Rect[] rects = {};
+        Rectangle[] rects = {};
         for (Tile tile: tiles_around(pos))
         {
-            if (Arrays.asList(constants.PHYSICS_TILES).contains(tile.type))
+            if (Arrays.asList(constants.PHYSICS_TILES).contains(tile.getType()))
             {
-                rects[rects.length] = new Rect(tile_size, tile_size, pos[0]*tile_size, pos[1]*tile_size);
+                rects[rects.length] = new Rectangle(pos[0]*tile_size, pos[1]*tile_size, tile_size, tile_size);
             }
         }
 

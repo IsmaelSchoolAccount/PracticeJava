@@ -14,6 +14,11 @@ public class Tile
         image = m_image;
     }
 
+    public String getType()
+    {
+        return type;
+    }
+
     public void render(Graphics2D g2d, int[] offset)
     {
         g2d.drawImage(image, (int) position[0] + offset[0], (int) position[1] + offset[1], width, height, null);

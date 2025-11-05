@@ -1,36 +1,85 @@
+import java.awt.Rectangle;
 
 public class PhysicsEntity {
     private String e_type;
     private double[] pos = {0.0, 0.0};
-    private int size;
+    private int[] size = {0, 0};
     private double[] velocity = {0.0, 0.0};
     //                directions:   up     down   right  left
     private boolean[] collisions = {false, false, false, false};
 
-    public PhysicsEntity(String m_e_type, double[] m_pos, int m_size)
+    public PhysicsEntity(String m_e_type, double[] m_pos, int[] m_size)
     {
         e_type = m_e_type;
         pos = m_pos;
         size = m_size;
     }
 
-    def update(self, tilemap, movement=(0, 0)):
-        self.collisions = {'up': False, 'down': False, 'right': False, 'left': False}
-        
-        frame_movement = (movement[0] + self.velocity[0], movement[1] + self.velocity[1])
-        
-        self.pos[0] += frame_movement[0]
-        entity_rect = self.rect()
-        for rect in tilemap.physics_rects_around(self.pos):
-            if entity_rect.colliderect(rect):
-                if frame_movement[0] > 0:
-                    entity_rect.right = rect.left
-                    self.collisions['right'] = True
-                if frame_movement[0] < 0:
-                    entity_rect.left = rect.right
-                    self.collisions['left'] = True
-                self.pos[0] = entity_rect.x
-        
+    private void resetCollisions()
+    {
+        collisions[0] = false;
+        collisions[1] = false;
+        collisions[2] = false;
+        collisions[3] = false;
+    }
+
+    private Rectangle get_rect()
+    {
+        return new Rectangle(pos[0], pos[1], size[0], size[1]);
+    }
+
+    public void update(Tilemap tilemap, double[] movement)
+    {
+        resetCollisions();
+
+        double[] frame_movement = {movement[0] + velocity[0], movement[1] + velocity[1]};
+
+        pos[0] += frame_movement[0];
+
+        entity_rect = get_rect();
+        for (Rectangle rect: tilemap.physics_rects_around(tilemap.point_to_location(pos)))
+        {
+            if (entity_rect.intersects(rect))
+            {
+                if (frame_movement[0] > 0)
+                {
+                    entity_rect.setLocation(rect.getX() + rect.getWidth(), entity_rect.getY());
+                    collisions[2] = true;
+                }
+                if (frame_movement[0] < 0)
+                {
+                    entity_rect.setLocation(rect.getX(), entity_rect.getY());
+                    collisions[3] = true;
+                }
+                pos[0] = entity_rect.getX();
+            }
+        }
+
+        pos[1] += frame_movement[1];
+
+        entity_rect = get_rect();
+        for (Rectangle rect: tilemap.physics_rects_around(tilemap.point_to_location(pos)))
+        {
+            if (entity_rect.intersects(rect))
+            {
+                if (frame_movement[1] > 0)
+                {
+                    entity_rect.setLocation(rect.getX() + rect.getWidth(), entity_rect.getY());
+                    collisions[2] = true;
+                }
+                if (frame_movement[1] < 0)
+                {
+                    entity_rect.setLocation(rect.getX(), entity_rect.getY());
+                    collisions[3] = true;
+                }
+                pos[0] = entity_rect.getX();
+            }
+        }
+
+
+    }
+}
+
         self.pos[1] += frame_movement[1]
         entity_rect = self.rect()
         for rect in tilemap.physics_rects_around(self.pos):
