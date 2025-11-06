@@ -1,3 +1,5 @@
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Rectangle;
 
 public class PhysicsEntity {
@@ -7,12 +9,15 @@ public class PhysicsEntity {
     private double[] velocity = {0.0, 0.0};
     //                directions:   up     down   right  left
     private boolean[] collisions = {false, false, false, false};
+    private boolean flip = false;
+    private Image img;
 
-    public PhysicsEntity(String m_e_type, double[] m_pos, int[] m_size)
+    public PhysicsEntity(String m_e_type, double[] m_pos, int[] m_size, Image m_img)
     {
         e_type = m_e_type;
         pos = m_pos;
         size = m_size;
+        img = m_img;
     }
 
     private void resetCollisions()
@@ -25,7 +30,7 @@ public class PhysicsEntity {
 
     private Rectangle get_rect()
     {
-        return new Rectangle(pos[0], pos[1], size[0], size[1]);
+        return new Rectangle((int)pos[0], (int)pos[1], size[0], size[1]);
     }
 
     public void update(Tilemap tilemap, double[] movement)
@@ -35,23 +40,25 @@ public class PhysicsEntity {
         double[] frame_movement = {movement[0] + velocity[0], movement[1] + velocity[1]};
 
         pos[0] += frame_movement[0];
+        System.out.println(pos[0]);
 
-        entity_rect = get_rect();
+        Rectangle entity_rect = get_rect();
         for (Rectangle rect: tilemap.physics_rects_around(tilemap.point_to_location(pos)))
         {
             if (entity_rect.intersects(rect))
             {
                 if (frame_movement[0] > 0)
                 {
-                    entity_rect.setLocation(rect.getX() + rect.getWidth(), entity_rect.getY());
+                    entity_rect.setLocation((int)rect.getX(), (int)entity_rect.getY());
                     collisions[2] = true;
                 }
                 if (frame_movement[0] < 0)
                 {
-                    entity_rect.setLocation(rect.getX(), entity_rect.getY());
+                    entity_rect.setLocation((int)(rect.getX() + rect.getWidth()), (int)entity_rect.getY());
                     collisions[3] = true;
                 }
                 pos[0] = entity_rect.getX();
+                System.out.println(pos[0]);
             }
         }
 
@@ -64,53 +71,42 @@ public class PhysicsEntity {
             {
                 if (frame_movement[1] > 0)
                 {
-                    entity_rect.setLocation(rect.getX() + rect.getWidth(), entity_rect.getY());
-                    collisions[2] = true;
+                    entity_rect.setLocation((int)entity_rect.getX(), (int)rect.getY());
+                    collisions[1] = true;
                 }
                 if (frame_movement[1] < 0)
                 {
-                    entity_rect.setLocation(rect.getX(), entity_rect.getY());
-                    collisions[3] = true;
+                    entity_rect.setLocation((int)entity_rect.getX(), (int)(rect.getY() + rect.getHeight()));
+                    collisions[0] = true;
                 }
                 pos[0] = entity_rect.getX();
             }
         }
 
+        if (movement[0] > 0)
+        {
+            flip = false;
+        }
+        if (movement[0] < 0)
+        {
+            flip = true;
+        }
 
+        velocity[0] = velocity[0] + movement[0] * 0.1;
+        velocity[0] *= 0.9;
+
+        if (collisions[2] || collisions[3])
+        {
+            velocity[0] = 0;
+        }
+        if (collisions[0] || collisions[1])
+        {
+            velocity[1] = 0;
+        }
+    }
+
+    public void render(Graphics2D g2d, int[] offset)
+    {
+        g2d.drawImage(img, (int) pos[0] + offset[0], (int) pos[1] + offset[1], size[0], size[1], null);
     }
 }
-
-        self.pos[1] += frame_movement[1]
-        entity_rect = self.rect()
-        for rect in tilemap.physics_rects_around(self.pos):
-            if entity_rect.colliderect(rect):
-                if frame_movement[1] > 0:
-                    entity_rect.bottom = rect.top
-                    self.collisions['down'] = True
-                if frame_movement[1] < 0:
-                    entity_rect.top = rect.bottom
-                    self.collisions['up'] = True
-                self.pos[1] = entity_rect.y
-                
-        if movement[0] > 0:
-            self.flip = False
-        if movement[0] < 0:
-            self.flip = True
-            
-        self.last_movement = movement
-
-        self.last_vel = self.velocity
-        
-        self.velocity[0] = self.velocity[0] + movement[0] * 0.1
-        self.velocity[0] *= 0.9
-        
-        if self.collisions['right'] or self.collisions['left']:
-            self.velocity[0] = 0
-        if self.collisions['down'] or self.collisions['up']:
-            self.velocity[1] = 0
-    
-        self.animation.update()
-
-    def render(self, surf, offset=(0, 0)):
-        surf.blit(pygame.transform.flip(self.animation.img(), self.flip, False), (self.pos[0] - offset[0] + self.anim_offset[0], self.pos[1] - offset[1] + self.anim_offset[1]))
-        #surf.blit(pygame.transform.flip(pygame.surface.Surface(self.size), self.flip, False), (self.pos[0] - offset[0], self.pos[1] - offset[1]))

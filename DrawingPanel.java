@@ -13,20 +13,28 @@ import java.io.IOException;
 class DrawingPanel extends JPanel {
 
     private Player player;
+    private Tilemap tilemap;
 
-    public DrawingPanel(Player m_player)
+    public DrawingPanel(Player m_player, Tilemap m_tilemap)
     {
         repaint();
         player = m_player;
+        tilemap = m_tilemap;
         
     }
 
     public void paint(Graphics g) {
 
+        int[] offset = {0, 0};
+
         // Cast Graphics object to Graphics2D for more advanced drawing options
         Graphics2D g2d = (Graphics2D) g;
 
-        player.render(g2d);
+        double[] inputs = {1.0, 0.0};
+        player.update(tilemap, inputs);
+
+        player.render(g2d, offset);
+        System.out.println("REPRINT");
         
     }
 

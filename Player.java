@@ -5,32 +5,10 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class Player {
-    private double x;
-    private double y;
-    private double vx = 0;
-    private double vy = 0;
-    private Image img;
-    private int height;
-    private int width;
-
-    public Player()
-    {
-        x = 120;
-        y = 200;
-        width = 60;
-        height = 60;
-
-        try {
-            img = ImageIO.read(new File("Assets/duck.png")); // Specify your image path
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void render(Graphics2D drawingPanel, int[] offset)
-    {
-        drawingPanel.drawImage(img, (int) x + offset[0], (int) y + offset[1], width, height, null);
+public class Player extends PhysicsEntity{
+    
+    public Player(String m_e_type, double[] m_pos, int[] m_size, Image m_img) {
+        super(m_e_type, m_pos, m_size, m_img);
     }
 }
 
