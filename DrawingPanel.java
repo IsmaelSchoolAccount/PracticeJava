@@ -30,12 +30,9 @@ class DrawingPanel extends JPanel {
         // Cast Graphics object to Graphics2D for more advanced drawing options
         Graphics2D g2d = (Graphics2D) g;
 
-        double[] inputs = {1.0, 0.0};
-        player.update(tilemap, inputs);
+        player.update(tilemap);
 
-        player.render(g2d, offset);
-        System.out.println("REPRINT");
-        
+        player.render(g2d, offset);        
     }
 
     

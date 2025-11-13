@@ -37,10 +37,9 @@ public class PhysicsEntity {
     {
         resetCollisions();
 
-        double[] frame_movement = {movement[0] + velocity[0], movement[1] + velocity[1]};
+        double[] frame_movement = {movement[2] + velocity[0] - movement[3], movement[1] + velocity[1] - movement[0]};
 
         pos[0] += frame_movement[0];
-        System.out.println(pos[0]);
 
         Rectangle entity_rect = get_rect();
         for (Rectangle rect: tilemap.physics_rects_around(tilemap.point_to_location(pos)))
@@ -109,4 +108,5 @@ public class PhysicsEntity {
     {
         g2d.drawImage(img, (int) pos[0] + offset[0], (int) pos[1] + offset[1], size[0], size[1], null);
     }
+
 }
