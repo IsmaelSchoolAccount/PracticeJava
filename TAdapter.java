@@ -7,7 +7,6 @@ public class TAdapter extends KeyAdapter {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println("KEYPRESSED");
 
         int key = e.getKeyCode();
 
